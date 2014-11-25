@@ -15,8 +15,8 @@ the list of commands specified in **$APPS**.
 
 - It should work on most Linux distributions.
     - So far tested on Ubuntu and Centos.
-- The users jailed home is under */jail/home/<username>*
-    - A backup is made of <username>'s old /home directory to */home/<username>.orig*
+- The users jailed home is under */jail/home/user*
+    - A backup is made of *user*'s old /home directory to */home/user.orig*
 - All the libraries needed by the specified $APPS are copied to the chrooted
 environment automatically.
 
