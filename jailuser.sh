@@ -37,7 +37,7 @@ mkdir -p $JAILPATH
 APPS="/bin/bash /bin/cat /bin/cp /bin/grep /bin/ls /bin/mkdir /bin/more /bin/mv /bin/pwd /bin/rm /bin/rmdir /usr/bin/du /usr/bin/head /usr/bin/id /usr/bin/less /usr/bin/ssh /usr/bin/scp /usr/bin/tail /usr/bin/rsync"
 
 
-if ( ! getent group jailed > /dev/null 2>&1 )
+if ! getent group jailed > /dev/null 2>&1
 then
   echo "creating jailed group"
   groupadd -r jailed
@@ -89,7 +89,6 @@ mkdir -p ${chrooted_home}
 chown root:root ${chrooted_home}
 chmod 755 ${chrooted_home}
 
-echo "* Creating users new jailed home directory" 
 mkdir -p ${virtual_home}
 chown $CHROOT_USERNAME:$group_name ${virtual_home}
 chmod 0700 ${virtual_home}
@@ -98,7 +97,7 @@ chmod 0700 ${virtual_home}
 # home directory. 
 
 # backup old directory.
-if [ -d "/home/${CHROOT_USERNAME}" ]
+if [ ! -h "/home/${CHROOT_USERNAME}" -a -d "/home/${CHROOT_USERNAME}" ]
 then
   echo "* Backing up users previous home to /home/${CHROOT_USERNAME}.orig"
   mv /home/${CHROOT_USERNAME} /home/${CHROOT_USERNAME}.orig
@@ -130,13 +129,13 @@ if [ ! -f etc/passwd ] ; then
 fi
 
 # Append primary group if not already there.
-if ( ! grep -q "^${group_name}:" ${JAILPATH}/etc/group )
+if ! grep -q "^${group_name}:" ${JAILPATH}/etc/group
 then 
   grep "^${group_name}:" /etc/group >> ${JAILPATH}/etc/group
 fi
 
 # Append this user if not already there.
-if ( ! grep -q "^${CHROOT_USERNAME}:" ${JAILPATH}/etc/passwd )
+if ! grep -q "^${CHROOT_USERNAME}:" ${JAILPATH}/etc/passwd
 then 
   grep "^${CHROOT_USERNAME}:" /etc/passwd >> ${JAILPATH}/etc/passwd
 fi
@@ -175,7 +174,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 for prog in $APPS
 do
   cp $prog ${JAILPATH}${prog} > /dev/null 2>&1
-  if ( ldd $prog > /dev/null )
+  if ldd $prog > /dev/null
   then
     LIBS=`ldd $prog | grep '/lib' | sed 's/\t/ /g' | sed 's/ /\n/g' | grep "/lib"`
     for l in $LIBS
