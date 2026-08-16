@@ -1,3 +1,12 @@
+> **Archived.** This script is from 2014. It copies a small userspace into `/jail` and points OpenSSH `ChrootDirectory` at it, which was useful when that was tedious to do by hand.
+>
+> It is not a good 2026 setup:
+> - For SFTP-only users, use OpenSSH `ForceCommand internal-sftp` and `ChrootDirectory`. No copied binaries needed.
+> - vsftpd is mentioned below but this script does not configure it. vsftpd has `chroot_local_user`.
+> - For an interactive restricted shell, use [jailkit](https://olivier.sessink.nl/jailkit/) or similar. chroot is a weak boundary once the user has `bash`, and this jail also copies in `ssh`, `scp`, and `rsync`.
+>
+> Left here as a historical example of the `ldd`-copy approach.
+
 linux-chroot-jail
 =================
 
